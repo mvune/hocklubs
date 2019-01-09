@@ -1,0 +1,23 @@
+{
+    "name": "mvune/hocklubs",
+    "description": "Dutch hockey clubs info scraper.",
+    "require": {
+        "php": "7.0.1",
+        "voku/simple_html_dom": "^4.2",
+        "catfan/medoo": "^1.6"
+    },
+    "suggest": {
+        "ext-sqlite3": "The sqlite3 PHP extension"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mvune\\Hocklubs\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mvune"
+        }
+    ]
+}
