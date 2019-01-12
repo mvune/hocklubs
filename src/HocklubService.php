@@ -2,7 +2,6 @@
 
 namespace Mvune\Hocklubs;
 
-use SQLite3;
 use Medoo\Medoo;
 use voku\helper\HtmlDomParser;
 
@@ -13,7 +12,7 @@ class HocklubService
     private $clubs = [];
 
     /**
-     * Get all `Hocklub`s scraped from `self::URL`.
+     * Get all `Hocklub`s listed on `self::URL`.
      * 
      * @return Hocklub[]
      */
@@ -54,30 +53,30 @@ class HocklubService
     /**
      * Store all `Hocklub`s in a given SQLite database.
      * 
-     * @param string $dbFile  Filepath to an SQLite database file.
+     * @param string $dbFile  Filepath to an SQLite database file. If the file does not exist, it will be created.
+     * @throws HockclubException  If SQLite database file is not writeable or not a database.
      * @return void
      */
-    public function allToSqliteDb(string $dbFile)
+    public function exportToSqliteDb(string $dbFile)
     {
-        if (!is_file($dbFile) && !extension_loaded('sqlite3')) {
-            throw new Exception('Given SQLite database file does not exist or is not a file.');
+        if (!is_file($dbFile) && !touch($dbFile)) {
+            throw new HocklubsException('Cannot create SQLite database file.');
         }
 
-        if (is_file($dbFile) && !is_writeable($dbFile)) {
-            throw new Exception('Given SQLite database file is not writeable.');
+        if (!is_writeable($dbFile)) {
+            throw new HocklubsException('SQLite database file is not writeable.');
         }
         
-        $this->getAll();
-
-        if (!is_file($dbFile)) {
-            $sqlite3Db = new SQLite3($dbFile);
-            $sqlite3Db = null;
-        }
-
         $db = new Medoo([
             'database_type' => 'sqlite',
             'database_file' => $dbFile
         ]);
+
+        if (!$db->query('SELECT * FROM `sqlite_master` LIMIT 1')) {
+            throw new HocklubsException('SQLite database file is not actually a database.');
+        }
+
+        $this->getAll();
 
         $db->query("CREATE TABLE IF NOT EXISTS `hocklubs` (
             `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
