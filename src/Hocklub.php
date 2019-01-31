@@ -22,8 +22,14 @@ class Hocklub
     /** @var string $website */
     public $website;
 
-    /** @var string $address */
-    public $address;
+    /** @var string $street */
+    public $street;
+
+    /** @var string $postal_code */
+    public $postal_code;
+
+    /** @var string $city */
+    public $city;
 
     /** @var string $outfit */
     public $outfit;

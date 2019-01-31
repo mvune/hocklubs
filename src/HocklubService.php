@@ -40,7 +40,17 @@ class HocklubService
 
             foreach ($clubPage->find('dt') as $tag) {
                 $property = preg_replace('/(Aantal leden)([\s\S]+)/', '$1', $tag->plaintext);
-                $value = str_replace(["\t", "\n"], '', $tag->next_sibling()->next_sibling()->innertext);
+                $value = preg_replace('/(\s)+/', ' ', $tag->next_sibling()->next_sibling()->innertext);
+
+                if ($property == 'Bezoekadres') {
+                    $matches = null;
+                    preg_match('/(.+)<br>.+(\d{4} ?\w{2})(.+)/', $value, $matches);
+                    $club['street'] = trim($matches[1]);
+                    $club['postal_code'] = $matches[2];
+                    $club['city'] = trim($matches[3]);
+                    continue;
+                }
+
                 $club[$property] = $value;
             }
 
@@ -86,7 +96,9 @@ class HocklubService
             `phone` TEXT,
             `email` TEXT,
             `website` TEXT,
-            `address` TEXT,
+            `street` TEXT,
+            `postal_code` TEXT,
+            `city` TEXT,
             `outfit` TEXT,
             `pitches` TEXT,
             `members` INTEGER,
@@ -114,7 +126,9 @@ class HocklubService
         $hocklub->phone = $club['Telefoonnummer'] ?? '';
         $hocklub->email = $club['E-mailadres'] ?? '';
         $hocklub->website = $club['Website'] ?? '';
-        $hocklub->address = $club['Bezoekadres'] ?? '';
+        $hocklub->street = $club['street'] ?? '';
+        $hocklub->postal_code = $club['postal_code'] ?? '';
+        $hocklub->city = $club['city'] ?? '';
         $hocklub->outfit = $club['Omschrijving tenue'] ?? '';
         $hocklub->pitches = $club['Soort velden'] ?? '';
         $hocklub->members = $club['Aantal leden'] ?? '';
