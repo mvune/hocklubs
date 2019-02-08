@@ -41,13 +41,18 @@ class HocklubService
             foreach ($clubPage->find('dt') as $tag) {
                 $property = preg_replace('/(Aantal leden)([\s\S]+)/', '$1', $tag->plaintext);
                 $value = preg_replace('/(\s)+/', ' ', $tag->next_sibling()->next_sibling()->innertext);
+                $value = strip_tags($value);
+
+                if ($property == 'Website') {
+                    $value = str_replace(['http://', 'https://'], '', $value);
+                }
 
                 if ($property == 'Bezoekadres') {
                     $matches = null;
-                    preg_match('/(.+)<br>.+(\d{4} ?\w{2})(.+)/', $value, $matches);
-                    $club['street'] = trim($matches[1]);
-                    $club['postal_code'] = $matches[2];
-                    $club['city'] = trim($matches[3]);
+                    preg_match('/(.+)(\d{4} ?\w{2})(.+)/', $value, $matches);
+                    $club['street'] = trim($matches[1] ?? '');
+                    $club['postal_code'] = $matches[2] ?? '';
+                    $club['city'] = trim($matches[3] ?? '');
                     continue;
                 }
 
