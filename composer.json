@@ -5,7 +5,8 @@
     "require": {
         "php": ">=7.0.1",
         "voku/simple_html_dom": "^4.2",
-        "catfan/medoo": "^1.6"
+        "catfan/medoo": "^1.6",
+        "gumlet/php-image-resize": "^1.9"
     },
     "autoload": {
         "psr-4": {

@@ -21,6 +21,9 @@ $clubs = $hock->getAll();
 
 // Export directly to a given SQLite database file. If the file does not exist, it will be created.
 $hock->exportToSqliteDb('example.db');
+
+// Download all logos and resize.
+$hock->downloadLogos('my-folder/logos', 25);
 ```
 
 ## Disclaimer
